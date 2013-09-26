@@ -24,7 +24,7 @@ class QtArgumentParser
 public:
     enum ArgumentType { Flag, String, Integer, Double, Variant };
 
-    QtArgumentParser(const QStringList &args = QStringList());
+    explicit QtArgumentParser(const QStringList &args = QStringList());
     void setArguments(const QStringList &args);
     void insertKey(const QString &key, ArgumentType type, const QStringList &variantData = QStringList());
     void reset();
