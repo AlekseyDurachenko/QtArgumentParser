@@ -144,8 +144,7 @@ QVariantMap QtArgumentParser::parse(bool *ok)
             QVariant value = QVariant();
             if (!parceArgument(m_Args, index, m_Keys[i], m_KeyTypes[i], value, m_KeyVariantData[i]))
             {
-                if (ok)
-                    *ok = false;
+                if (ok) *ok = false;
                 return QVariantMap();
             }
             if (!value.isNull())
@@ -156,11 +155,10 @@ QVariantMap QtArgumentParser::parse(bool *ok)
         if (index < m_Args.count() && !m_Keys.contains(m_Args[index]))
         {
             m_Unused.push_back(m_Args[index]);
-            ++index;
+            index += 1;
         }
     }
 
-    if (ok)
-        *ok = true;
+    if (ok) *ok = true;
     return detectedArguments;
 }
