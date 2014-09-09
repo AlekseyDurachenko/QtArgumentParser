@@ -22,26 +22,31 @@
 class QtArgumentParser
 {
 public:
-    enum ArgumentType { Flag, String, Integer, Double, Variant };
-
+    enum ArgumentType
+    {
+        Flag    = 0x10,
+        String  = 0x20,
+        Integer = 0x30,
+        Double  = 0x40,
+        Variant = 0x50
+    };
+public:
     explicit QtArgumentParser(const QStringList &args = QStringList());
+
     void setArguments(const QStringList &args);
     void insertKey(const QString &key, ArgumentType type, const QStringList &variantData = QStringList());
     void reset();
     QVariantMap parse(bool *ok = 0);
     inline const QStringList &unused() const;
-
 public:
     static bool parceArgument(const QStringList &args, int &index, const QString &name,
             ArgumentType type, QVariant &result, const QStringList variantData = QStringList());
-
 private:
     QStringList m_Unused;
     QStringList m_Args;
     QStringList m_Keys;
     QList<ArgumentType> m_KeyTypes;
     QList<QStringList> m_KeyVariantData;
-
 };
 
 inline const QStringList &QtArgumentParser::unused() const
