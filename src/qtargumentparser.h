@@ -1,4 +1,4 @@
-// Copyright (C) 2013, Durachenko Aleksey V. <durachenko.aleksey@gmail.com>
+// Copyright (C) 2013-2014, Durachenko Aleksey V. <durachenko.aleksey@gmail.com>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -12,9 +12,9 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-#ifndef QTARGUMENTPARCER_H
-#define QTARGUMENTPARCER_H
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
+#ifndef QTARGUMENTPARSER_H
+#define QTARGUMENTPARSER_H
 
 #include <QVariant>
 #include <QStringList>
@@ -33,25 +33,80 @@ public:
 public:
     explicit QtArgumentParser(const QStringList &args = QStringList());
 
-    void setArguments(const QStringList &args);
-    void insertKey(const QString &key, ArgumentType type, const QStringList &variantData = QStringList());
-    void reset();
-    QVariantMap parse(bool *ok = 0);
+    inline const QStringList &args() const;
+    void setArgs(const QStringList &args);
+
+    inline int count() const;
+    inline const QStringList &keys() const;
+    inline const QString &key(int index);
+    inline ArgumentType type(int index);
+    inline const QStringList &variants(int index);
+    void add(const QString &key, ArgumentType type,
+             const QStringList &variants = QStringList());
+    void clear();
+
+    bool parse();
+    inline const QVariantMap &result() const;
     inline const QStringList &unused() const;
+    inline const QString &errorString() const;
 public:
-    static bool parceArgument(const QStringList &args, int &index, const QString &name,
-            ArgumentType type, QVariant &result, const QStringList variantData = QStringList());
+    static bool parceArgument(const QStringList &args, int &index,
+            const QString &name, ArgumentType type,
+            const QStringList variants,
+            QVariant &result, QString *reason = 0);
 private:
-    QStringList m_Unused;
-    QStringList m_Args;
-    QStringList m_Keys;
-    QList<ArgumentType> m_KeyTypes;
-    QList<QStringList> m_KeyVariantData;
+    QStringList m_unused;
+    QStringList m_args;
+    QStringList m_keys;
+    QList<ArgumentType> m_keyTypes;
+    QList<QStringList> m_keyVariants;
+    QVariantMap m_result;
+    QString m_errorString;
 };
+
+const QStringList &QtArgumentParser::args() const
+{
+    return m_args;
+}
+
+int QtArgumentParser::count() const
+{
+    return m_keys.count();
+}
+
+const QStringList &QtArgumentParser::keys() const
+{
+    return m_keys;
+}
+
+const QString &QtArgumentParser::key(int index)
+{
+    return m_keys.at(index);
+}
+
+QtArgumentParser::ArgumentType QtArgumentParser::type(int index)
+{
+    return m_keyTypes.at(index);
+}
+
+const QStringList &QtArgumentParser::variants(int index)
+{
+    return m_keyVariants.at(index);
+}
+
+const QVariantMap &QtArgumentParser::result() const
+{
+    return m_result;
+}
 
 inline const QStringList &QtArgumentParser::unused() const
 {
-    return m_Unused;
+    return m_unused;
 }
 
-#endif
+const QString &QtArgumentParser::errorString() const
+{
+    return m_errorString;
+}
+
+#endif // QTARGUMENTPARSER_H

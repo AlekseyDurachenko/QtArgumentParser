@@ -22,37 +22,59 @@ int main(int argc, char **argv)
     QCoreApplication args(argc, argv);
 
     QtArgumentParser parser(args.arguments());
-    parser.insertKey("-i", QtArgumentParser::String);
-    parser.insertKey("-o", QtArgumentParser::String);
-    parser.insertKey("-n", QtArgumentParser::Integer);
-    parser.insertKey("-d", QtArgumentParser::Double);
-    parser.insertKey("-f", QtArgumentParser::Flag);
-    parser.insertKey("-x", QtArgumentParser::Variant,
+    parser.add("-i", QtArgumentParser::String);
+    parser.add("-o", QtArgumentParser::String);
+    parser.add("-n", QtArgumentParser::Integer);
+    parser.add("-d", QtArgumentParser::Double);
+    parser.add("-f", QtArgumentParser::Flag);
+    parser.add("-x", QtArgumentParser::Variant,
             QStringList() << "Variant" << "SomeCode" << "Unknow" << "None");
 
-    bool ok;
-    QVariantMap map = parser.parse(&ok);
-
-    if (!ok)
+    if (!parser.parse())
     {
         std::cout << "can not parse the arguments" << std::endl;
+        std::cout << parser.errorString().toStdString() << std::endl;
         return -1;
     }
 
-    if (!map.contains("-i") || !map.contains("-o") || !ok)
+    QVariantMap map = parser.result();
+    if (!map.contains("-i") || !map.contains("-o"))
     {
         std::cout << "arguments \"-i\" and \"-o\" are required" << std::endl;
         return -1;
     }
 
-    std::cout << "The arguments" << std::endl;
-    std::cout << "  -i = " << map["-i"].toString().toStdString() << std::endl;
-    std::cout << "  -o = " << map["-o"].toString().toStdString() << std::endl;
-    std::cout << "  -n = " << map["-n"].toInt() << std::endl;
-    std::cout << "  -d = " << map["-d"].toDouble() << std::endl;
-    std::cout << "  -f = " << map["-f"].toBool() << std::endl;
-    std::cout << "  -x = " << map["-x"].toString().toStdString() << std::endl;
-    std::cout << "The unused" << std::endl;
+    std::cout << "The arguments:" << std::endl;
+    foreach (const QString &key, map.keys())
+    {
+        switch (map.value(key).type())
+        {
+        case QVariant::String:
+            std::cout << "  " << key.toStdString()
+                      << " = "<< map.value(key).toString().toStdString()
+                      << std::endl;
+            break;
+        case QVariant::Int:
+        case QVariant::LongLong:
+            std::cout << "  " << key.toStdString()
+                      << " = "<< map.value(key).toLongLong()
+                      << std::endl;
+            break;
+        case QVariant::Double:
+            std::cout << "  " << key.toStdString()
+                      << " = "<< map.value(key).toDouble()
+                      << std::endl;
+            break;
+        case QVariant::Bool:
+            std::cout << "  " << key.toStdString()
+                      << " = "<< ((map.value(key).toBool())?("true"):("false"))
+                      << std::endl;
+            break;
+        default: ;
+        }
+    }
+
+    std::cout << "The unused values:" << std::endl;
     foreach (const QString &value, parser.unused())
         std::cout << "  * " << value.toStdString() << std::endl;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2013, Durachenko Aleksey V. <durachenko.aleksey@gmail.com>
+// Copyright (C) 2013-2014, Durachenko Aleksey V. <durachenko.aleksey@gmail.com>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -12,38 +12,40 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
 #include "qtargumentparser.h"
 
 QtArgumentParser::QtArgumentParser(const QStringList& args)
 {
-    setArguments(args);
+    setArgs(args);
 }
 
-void QtArgumentParser::setArguments(const QStringList& args)
+void QtArgumentParser::setArgs(const QStringList& args)
 {
-    m_Args = args;
+    m_args = args;
 }
 
-void QtArgumentParser::insertKey(const QString &key, ArgumentType type, const QStringList &data)
+void QtArgumentParser::add(const QString &key, ArgumentType type,
+        const QStringList &data)
 {
-    if (!m_Keys.contains(key))
+    if (!m_keys.contains(key))
     {
-        m_Keys.push_back(key);
-        m_KeyTypes.push_back(type);
-        m_KeyVariantData.push_back(data);
+        m_keys.push_back(key);
+        m_keyTypes.push_back(type);
+        m_keyVariants.push_back(data);
     }
 }
 
-void QtArgumentParser::reset()
+void QtArgumentParser::clear()
 {
-    m_Keys.clear();
-    m_KeyTypes.clear();
-    m_KeyVariantData.clear();
+    m_keys.clear();
+    m_keyTypes.clear();
+    m_keyVariants.clear();
 }
 
 bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
-    const QString &name, ArgumentType type, QVariant &result, const QStringList variantData)
+        const QString &name, ArgumentType type, const QStringList variants,
+        QVariant &result, QString *reason)
 {
     if (type == Flag)
     {
@@ -60,6 +62,9 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
             index += 1;
             if (index >= args.count())
             {
+                if (reason)
+                    *reason = QObject::tr("\"%1\" must have a parameter").arg(name);
+
                 return false;
             }
 
@@ -74,6 +79,9 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
             index += 1;
             if (index >= args.count())
             {
+                if (reason)
+                    *reason = QObject::tr("\"%1\" must have a parameter").arg(name);
+
                 return false;
             }
 
@@ -82,6 +90,8 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
             index += 1;
             if(!ok)
             {
+                if (reason)
+                    *reason = QObject::tr("\"%1\" must be an integer").arg(name);
                 return false;
             }
         }
@@ -95,6 +105,9 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
                 index += 1;
                 if (index >= args.count())
                 {
+                    if (reason)
+                        *reason = QObject::tr("\"%1\" must have a parameter").arg(name);
+
                     return false;
                 }
 
@@ -103,6 +116,9 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
                 index += 1;
                 if(!ok)
                 {
+                    if (reason)
+                        *reason = QObject::tr("\"%1\" must be a real").arg(name);
+
                     return false;
                 }
             }
@@ -115,12 +131,20 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
             index += 1;
             if (index >= args.count())
             {
+                if (reason)
+                    *reason = QObject::tr("\"%1\" must have a parameter").arg(name);
+
                 return false;
             }
 
-            if (!variantData.contains(args[index]))
+            if (!variants.contains(args[index]))
             {
                 index += 1;
+
+                if (reason)
+                    *reason = QObject::tr("\"%1\" must have a value from the list (%2)")
+                        .arg(name, variants.join(", "));
+
                 return false;
             }
 
@@ -132,33 +156,30 @@ bool QtArgumentParser::parceArgument(const QStringList &args, int &index,
     return true;
 }
 
-QVariantMap QtArgumentParser::parse(bool *ok)
+bool QtArgumentParser::parse()
 {
-    QVariantMap detectedArguments;
+    m_errorString.clear();
+    m_result.clear();
+    m_unused.clear();
 
-    m_Unused.clear();
-    for (int index = 1; index < m_Args.count(); /**/)
+    for (int index = 1; index < m_args.count(); /**/)
     {
-        for (int i = 0; i < m_Keys.count() && index < m_Args.count(); ++i)
+        for (int n = 0; n < m_keys.count() && index < m_args.count(); ++n)
         {
             QVariant value = QVariant();
-            if (!parceArgument(m_Args, index, m_Keys[i], m_KeyTypes[i], value, m_KeyVariantData[i]))
-            {
-                if (ok) *ok = false;
-                return QVariantMap();
-            }
+            if (!parceArgument(m_args, index, m_keys[n], m_keyTypes[n],
+                               m_keyVariants[n], value, &m_errorString))
+                return false;
+
             if (!value.isNull())
-            {
-                detectedArguments[m_Keys[i]] = value;
-            }
+                m_result[m_keys[n]] = value;
         }
-        if (index < m_Args.count() && !m_Keys.contains(m_Args[index]))
+        if (index < m_args.count() && !m_keys.contains(m_args[index]))
         {
-            m_Unused.push_back(m_Args[index]);
+            m_unused.push_back(m_args[index]);
             index += 1;
         }
     }
 
-    if (ok) *ok = true;
-    return detectedArguments;
+    return true;
 }
