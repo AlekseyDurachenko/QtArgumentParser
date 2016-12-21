@@ -38,6 +38,12 @@ public:
     void insertUnused(const QString &value);
     void insertUnused(const QStringList &values);
 
+    bool contains(const QString &key) const;
+    bool contains(const QtArgumentParserArgument &argument) const;
+
+    QVariant value(const QString &key) const;
+    QVariant value(const QtArgumentParserArgument &argument) const;
+
 private:
     QtArgumentParserError m_error;
     QString m_errorString;

@@ -13,36 +13,25 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
-#include <QCoreApplication>
-#include "test_qtargumentparserargument.h"
-#include "test_qtargumentparserresultrecord.h"
-#include "test_qtargumentparserresult.h"
-#include "test_qtargumentparser.h"
+#ifndef TEST_QTARGUMENTPARSER_H
+#define TEST_QTARGUMENTPARSER_H
 
 
-int main(int argc, char *argv[])
+#include <QObject>
+#include <QtTest/QtTest>
+
+
+class Test_QtArgumentParser : public QObject
 {
-    QCoreApplication app(argc, argv);
+    Q_OBJECT
+public:
+    explicit Test_QtArgumentParser(QObject *parent = 0);
 
-    int retval = QTest::qExec(new Test_QtArgumentParserArgument, argc, argv);
-    if (retval) {
-        return retval;
-    }
+private slots:
+    void test_defaultConstructor();
+    void test_setGet();
+    void test_parse();
+};
 
-    retval = QTest::qExec(new Test_QtArgumentParserResultRecord, argc, argv);
-    if (retval) {
-        return retval;
-    }
 
-    retval = QTest::qExec(new Test_QtArgumentParserResult, argc, argv);
-    if (retval) {
-        return retval;
-    }
-
-    retval = QTest::qExec(new Test_QtArgumentParser, argc, argv);
-    if (retval) {
-        return retval;
-    }
-
-    return 0;
-}
+#endif // TEST_QTARGUMENTPARSER_H

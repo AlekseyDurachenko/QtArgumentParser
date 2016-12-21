@@ -15,6 +15,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
 #include "qtargumentparser.h"
 
+
+/*
 QtArgumentParser::QtArgumentParser(const QStringList& args)
 {
     setArgs(args);
@@ -162,7 +164,7 @@ bool QtArgumentParser::parse()
     m_result.clear();
     m_unused.clear();
 
-    for (int index = 1; index < m_args.count(); /**/)
+    for (int index = 1; index < m_args.count(); )
     {
         for (int n = 0; n < m_keys.count() && index < m_args.count(); ++n)
         {
@@ -182,4 +184,35 @@ bool QtArgumentParser::parse()
     }
 
     return true;
+}
+*/
+
+QtArgumentParser::QtArgumentParser()
+{
+    m_unusedAllowed = false;
+}
+
+void QtArgumentParser::setUnusedAllowed(bool allow)
+{
+    m_unusedAllowed = allow;
+}
+
+void QtArgumentParser::insertArgument(const QtArgumentParserArgument &argument)
+{
+    m_arguments.append(argument);
+}
+
+void QtArgumentParser::insertArguments(const QList<QtArgumentParserArgument> &arguments)
+{
+    m_arguments.append(arguments);
+}
+
+QtArgumentParserResult QtArgumentParser::parse(const QStringList &args) const
+{
+    QtArgumentParserResult result;
+
+
+
+
+    return result;
 }

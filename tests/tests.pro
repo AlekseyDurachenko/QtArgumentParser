@@ -16,8 +16,10 @@ SOURCES +=                                              \
     $$PWD/src/test_qtargumentparserargument.cpp         \
     $$PWD/src/test_qtargumentparserresultrecord.cpp     \
     $$PWD/src/test_qtargumentparserresult.cpp           \
+    $$PWD/src/test_qtargumentparser.cpp                 \
 
 HEADERS +=                                              \
     $$PWD/src/test_qtargumentparserargument.h           \
     $$PWD/src/test_qtargumentparserresultrecord.h       \
     $$PWD/src/test_qtargumentparserresult.h             \
+    $$PWD/src/test_qtargumentparser.h                   \

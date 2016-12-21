@@ -46,3 +46,47 @@ void QtArgumentParserResult::insertUnused(const QStringList &values)
 {
     m_unused.append(values);
 }
+
+bool QtArgumentParserResult::contains(const QString &key) const
+{
+    foreach (const QtArgumentParserResultRecord &record, m_records) {
+        if (record.argument().key() == key) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool QtArgumentParserResult::contains(const QtArgumentParserArgument &argument) const
+{
+    foreach (const QtArgumentParserResultRecord &record, m_records) {
+        if (record.argument().key() == argument.key()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+QVariant QtArgumentParserResult::value(const QString &key) const
+{
+    foreach (const QtArgumentParserResultRecord &record, m_records) {
+        if (record.argument().key() == key) {
+            return record.value();
+        }
+    }
+
+    return QVariant();
+}
+
+QVariant QtArgumentParserResult::value(const QtArgumentParserArgument &argument) const
+{
+    foreach (const QtArgumentParserResultRecord &record, m_records) {
+        if (record.argument().key() == argument.key()) {
+            return record.value();
+        }
+    }
+
+    return QVariant();
+}

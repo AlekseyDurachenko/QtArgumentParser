@@ -16,6 +16,41 @@
 #ifndef QTARGUMENTPARSER_H
 #define QTARGUMENTPARSER_H
 
+
+#include "qtargumentparserargument.h"
+#include "qtargumentparserresult.h"
+
+
+class QtArgumentParser
+{
+public:
+    QtArgumentParser();
+
+    inline bool unusedAllowed() const;
+    void setUnusedAllowed(bool allow);
+
+    inline const QList<QtArgumentParserArgument> &arguments() const;
+    void insertArgument(const QtArgumentParserArgument &argument);
+    void insertArguments(const QList<QtArgumentParserArgument> &arguments);
+
+    QtArgumentParserResult parse(const QStringList &args) const;
+
+private:
+    bool m_unusedAllowed;
+    QList<QtArgumentParserArgument> m_arguments;
+};
+
+bool QtArgumentParser::unusedAllowed() const
+{
+    return m_unusedAllowed;
+}
+
+const QList<QtArgumentParserArgument> &QtArgumentParser::arguments() const
+{
+    return m_arguments;
+}
+
+/*
 #include <QVariant>
 #include <QStringList>
 
@@ -108,5 +143,6 @@ const QString &QtArgumentParser::errorString() const
 {
     return m_errorString;
 }
+*/
 
 #endif // QTARGUMENTPARSER_H
