@@ -27,22 +27,22 @@ void QtArgumentParserResult::setError(QtArgumentParserError error, const QString
     m_errorString = errorString;
 }
 
-void QtArgumentParserResult::appendRecord(const QtArgumentParserResultRecord &record)
+void QtArgumentParserResult::insertRecord(const QtArgumentParserResultRecord &record)
 {
     m_records.append(record);
 }
 
-void QtArgumentParserResult::appendRecords(const QList<QtArgumentParserResultRecord> &records)
+void QtArgumentParserResult::insertRecords(const QList<QtArgumentParserResultRecord> &records)
 {
     m_records.append(records);
 }
 
-void QtArgumentParserResult::appendUnused(const QString &value)
+void QtArgumentParserResult::insertUnused(const QString &value)
 {
     m_unused.append(value);
 }
 
-void QtArgumentParserResult::appendUnused(const QStringList &values)
+void QtArgumentParserResult::insertUnused(const QStringList &values)
 {
     m_unused.append(values);
 }

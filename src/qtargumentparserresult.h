@@ -31,12 +31,12 @@ public:
     void setError(QtArgumentParserError error, const QString &errorString = QString());
 
     inline const QList<QtArgumentParserResultRecord> &records() const;
-    void appendRecord(const QtArgumentParserResultRecord &record);
-    void appendRecords(const QList<QtArgumentParserResultRecord> &records);
+    void insertRecord(const QtArgumentParserResultRecord &record);
+    void insertRecords(const QList<QtArgumentParserResultRecord> &records);
 
     inline const QStringList &unused() const;
-    void appendUnused(const QString &value);
-    void appendUnused(const QStringList &values);
+    void insertUnused(const QString &value);
+    void insertUnused(const QStringList &values);
 
 private:
     QtArgumentParserError m_error;

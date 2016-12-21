@@ -35,10 +35,10 @@ void Test_QtArgumentParserResult::test_setGet()
 {
     QtArgumentParserResult result;
     result.setError(QtArgumentParserError::ParseError, QString("error test"));
-    result.appendRecord(QtArgumentParserResultRecord());
-    result.appendRecords(QList<QtArgumentParserResultRecord>() << QtArgumentParserResultRecord());
-    result.appendUnused(QString());
-    result.appendUnused(QStringList() << QString());
+    result.insertRecord(QtArgumentParserResultRecord());
+    result.insertRecords(QList<QtArgumentParserResultRecord>() << QtArgumentParserResultRecord());
+    result.insertUnused(QString());
+    result.insertUnused(QStringList() << QString());
     QCOMPARE(result.error(), QtArgumentParserError::ParseError);
     QCOMPARE(result.errorString(), QString("error test"));
     QCOMPARE(result.records().count(), 2);
